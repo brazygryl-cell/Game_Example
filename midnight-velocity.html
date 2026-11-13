@@ -4,9 +4,9 @@
 :root{--gold:#ffdb75;--pink:#ff4da6;--cyan:#67faff;--bg:#070812}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:#f4f4ff;font-family:Rajdhani,sans-serif}body{background:radial-gradient(ellipse at top,#302048,#0d1023 50%,#080812);overflow-x:hidden}.wrap{max-width:1440px;margin:auto;padding:18px 20px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.brand{font:900 clamp(21px,3vw,36px) Orbitron;letter-spacing:2px}.brand em{font-style:normal;color:var(--pink);text-shadow:0 0 20px #ff4da677}.sub{font-weight:700;letter-spacing:3px;font-size:12px;color:#aab6d2}.buttons{display:flex;gap:7px;flex-wrap:wrap}.btn{font:800 11px Orbitron;color:#08111d;background:linear-gradient(120deg,#66e7f9,#adfcff);padding:11px 13px;border:1px solid #92faff;cursor:pointer;letter-spacing:1px;transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.15)}.btn.alt{color:#dbf7ff;background:#151c35;border-color:#495574}.btn.pink{background:linear-gradient(120deg,#ff4da6,#ff9dc9);border-color:#ffabd7}.hud{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin:16px 0 12px}.stat{border:1px solid #415070;padding:11px;background:linear-gradient(135deg,#1c2342,#101326);position:relative}.stat:after{content:"";position:absolute;bottom:0;left:0;width:35%;height:2px;background:var(--pink);box-shadow:0 0 10px var(--pink)}.stat:nth-child(even):after{background:var(--cyan)}.stat small{display:block;color:#a9b5d1;letter-spacing:2px;font-size:11px}.stat strong{font:800 clamp(15px,2vw,26px) Orbitron;display:block;margin-top:5px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px}.screen{position:relative;aspect-ratio:16/10;min-height:340px;border:2px solid #5e4f83;background:#080d1c;overflow:hidden;box-shadow:0 0 0 5px #17172c,0 0 45px #e4378c22}.screen:fullscreen{width:100vw;height:100dvh;aspect-ratio:auto;min-height:0;border:0}canvas{width:100%;height:100%;display:block;touch-action:none}.glass{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 3px,#fff 4px 5px);opacity:.025}.overlay{position:absolute;z-index:5;inset:0;background:#070818d6;backdrop-filter:blur(8px);display:grid;place-items:center;padding:15px}.overlay.hidden{display:none}.modal{width:min(600px,100%);max-height:95%;overflow:auto;text-align:center;padding:26px;background:linear-gradient(135deg,#202644,#0c1027);border:1px solid #9966a5;box-shadow:0 0 65px #fe51b325}.modal h2{font:900 clamp(25px,4vw,50px) Orbitron;margin:12px 0;line-height:1.2}.modal h2 span{color:var(--pink)}.modal p{font-size:17px;color:#bfc6dc;line-height:1.4}.modal .btn{margin:8px 4px 0}.eyebrow{font:700 11px Orbitron;letter-spacing:3px;color:var(--gold)}.tags{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:18px 0}.tag{border:1px solid #565976;background:#131c37;padding:6px 9px;font-size:12px;letter-spacing:1px}.side{display:flex;flex-direction:column;gap:12px}.panel{border:1px solid #4b456d;background:linear-gradient(145deg,#20223d,#101329);padding:17px}.panel h3{font:800 12px Orbitron;color:var(--gold);margin:0 0 12px;letter-spacing:2px}.panel p{font-size:15px;color:#b5bed5;line-height:1.4;margin:0}.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #ffffff14;font-weight:700}.row b{color:var(--cyan)}.meter{height:10px;border:1px solid #43516a;background:#0b1024;overflow:hidden;margin:7px 0 15px}.meter div{height:100%;width:100%;background:linear-gradient(90deg,#ff4da6,#ffe185);box-shadow:0 0 12px #ff4da6}.legend{margin:9px 0;font-size:15px}.legend b{color:var(--pink)}.toast{position:absolute;top:18%;left:50%;transform:translateX(-50%);font:900 clamp(16px,2.5vw,29px) Orbitron;text-shadow:0 0 18px var(--pink);pointer-events:none;z-index:3;text-align:center;opacity:0}.toast.flash{animation:flash 1.4s ease-out}.touch{display:none;justify-content:space-between;gap:10px;margin-top:15px;user-select:none}.touch button{min-height:60px;min-width:70px;border-radius:8px;background:#222b4d;color:white;border:1px solid #6e76a4;font:800 16px Orbitron;touch-action:none}.touch>div{display:flex;gap:7px;flex-wrap:wrap}.touch .nitro{background:#4d244e;border-color:var(--pink);color:#ff9bc8}.bottom{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#7d8bad;font-size:12px;letter-spacing:1px}@keyframes flash{0%{opacity:0;transform:translate(-50%,-14px)}18%,72%{opacity:1}100%{opacity:0;transform:translate(-50%,14px)}}@media(max-width:1100px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(2,1fr)}}@media(max-width:680px){.wrap{padding:11px}.hud{grid-template-columns:repeat(3,1fr);gap:5px}.stat{padding:8px}.stat small{font-size:10px}.stat strong{font-size:16px}.side{grid-template-columns:1fr}.screen{aspect-ratio:4/5}.touch{display:flex}.buttons .btn{padding:8px;font-size:9px}.modal{padding:16px}}
 </style></head><body><main class="wrap"><header class="top"><div><div class="sub">STREET ARCADE // CIRCUIT 03</div><div class="brand">MIDNIGHT <em>VELOCITY</em></div></div><div class="buttons"><button id="neon" class="btn alt">✦ NEON RIFT</button><button id="orbit" class="btn alt">✦ ORBIT BREAKER</button><button id="fullscreen" class="btn alt">⛶ FULLSCREEN</button><button id="pause" class="btn alt">⏸ PAUSE</button><button id="sound" class="btn alt">🔊 ON</button></div></header>
 <section class="hud"><div class="stat"><small>SPEED</small><strong id="speed">000</strong></div><div class="stat"><small>LAP</small><strong id="lap">1 / 3</strong></div><div class="stat"><small>POSITION</small><strong id="place">1 / 4</strong></div><div class="stat"><small>RACE TIME</small><strong id="time">00:00</strong></div><div class="stat"><small>BEST LAP</small><strong id="best">--:--</strong></div><div class="stat"><small>SCORE</small><strong id="score">00000</strong></div></section>
-<div class="layout"><section class="screen" id="screen"><canvas id="track"></canvas><div class="glass"></div><div class="toast" id="toast"></div><div class="overlay" id="overlay"><div class="modal" id="modal"><div class="eyebrow">✦ AFTER HOURS RACING ✦</div><h2>RULE THE <span>NEON STREETS</span></h2><p>Race three aggressive AI opponents around a glowing midnight circuit. Nail the corners, drift for style points, and use nitro on the straights. Finish three laps as fast as you can!</p><div class="tags"><span class="tag">W / ↑ ACCELERATE</span><span class="tag">S / ↓ BRAKE</span><span class="tag">A D / ← → STEER</span><span class="tag">SPACE NITRO</span><span class="tag">SHIFT DRIFT</span></div><button class="btn pink" id="start">START YOUR ENGINES ▶</button></div></div></section>
-<aside class="side"><div class="panel"><h3>▸ RACE TELEMETRY</h3><div class="row"><span>NITRO BOOST</span><b id="nitroValue">100%</b></div><div class="meter"><div id="nitroBar"></div></div><div class="row"><span>DRIFT COMBO</span><b id="drift">0</b></div><div class="row"><span>TRACK SURFACE</span><b id="surface">ASPHALT</b></div><div class="row"><span>ENGINE</span><b id="engine">IDLE</b></div><div class="row"><span>LEADERBOARD</span><b id="record">--:--</b></div><button id="restart" class="btn pink" style="margin-top:13px">↻ RESTART RACE</button></div><div class="panel"><h3>▸ RACE GUIDE</h3><p>Follow the glowing lane and cross every quarter of the circuit to count a lap. Going off-road slows your car. Nitro refills while you're not boosting. Opponent cars follow racing lines and will fight for first place.</p><div class="legend"><b>MAGENTA</b> = YOUR CAR</div><div class="legend"><b>CYAN / GOLD / PURPLE</b> = RIVALS</div><div class="legend"><b>GOLD SPARKS</b> = DRIFT BONUS</div></div></aside></div>
-<div class="touch"><div><button data-k="ArrowLeft">◀</button><button data-k="ArrowRight">▶</button></div><div><button data-k="ArrowUp">GAS</button><button data-k="ArrowDown">BRAKE</button><button data-k="Shift">DRIFT</button><button class="nitro" data-k="Space">NITRO</button></div></div><footer class="bottom"><span>MIDNIGHT VELOCITY // ARCADE RACING SIMULATION</span><span>VANILLA JAVASCRIPT • PROCEDURAL GRAPHICS • WEB AUDIO</span></footer></main>
+<div class="layout"><section class="screen" id="screen"><canvas id="track"></canvas><div class="glass"></div><div class="toast" id="toast"></div><div class="overlay" id="overlay"><div class="modal" id="modal"><div class="eyebrow">✦ AFTER HOURS RACING ✦</div><h2>RULE THE <span>NEON STREETS</span></h2><p>Race three aggressive AI opponents around a glowing midnight circuit. Steer directly with the arrow keys, hold Space to accelerate, and Shift to unleash nitro on the straights. Finish three laps as fast as you can!</p><div class="tags"><span class="tag">ARROWS / WASD = MOVE</span><span class="tag">SPACE = ACCELERATE</span><span class="tag">SHIFT = NITRO</span><span class="tag">Z = DRIFT EFFECT</span></div><button class="btn pink" id="start">START YOUR ENGINES ▶</button></div></div></section>
+<aside class="side"><div class="panel"><h3>▸ RACE TELEMETRY</h3><div class="row"><span>NITRO BOOST</span><b id="nitroValue">100%</b></div><div class="meter"><div id="nitroBar"></div></div><div class="row"><span>DRIFT COMBO</span><b id="drift">0</b></div><div class="row"><span>TRACK SURFACE</span><b id="surface">ASPHALT</b></div><div class="row"><span>ENGINE</span><b id="engine">IDLE</b></div><div class="row"><span>LEADERBOARD</span><b id="record">--:--</b></div><button id="restart" class="btn pink" style="margin-top:13px">↻ RESTART RACE</button></div><div class="panel"><h3>▸ RACE GUIDE</h3><p>Use the arrow keys to guide your car smoothly around the circuit. Hold Space for acceleration and Shift for nitro. Follow the glowing lane and cross every quarter of the circuit to count a lap. Going off-road slows your car. Nitro refills while you're not boosting. Opponent cars follow racing lines and will fight for first place.</p><div class="legend"><b>MAGENTA</b> = YOUR CAR</div><div class="legend"><b>CYAN / GOLD / PURPLE</b> = RIVALS</div><div class="legend"><b>GOLD SPARKS</b> = DRIFT BONUS</div></div></aside></div>
+<div class="touch"><div><button data-k="ArrowLeft">◀</button><button data-k="ArrowRight">▶</button></div><div><button data-k="ArrowUp">▲</button><button data-k="ArrowDown">▼</button><button data-k="Space">GAS</button><button class="nitro" data-k="Shift">NITRO</button></div></div><footer class="bottom"><span>MIDNIGHT VELOCITY // ARCADE RACING SIMULATION</span><span>VANILLA JAVASCRIPT • PROCEDURAL GRAPHICS • WEB AUDIO</span></footer></main>
 <script>
 (()=>{'use strict';
 const $=s=>document.getElementById(s),canvas=$('track'),ctx=canvas.getContext('2d'),screen=$('screen'),PI=Math.PI,TAU=PI*2,rand=(a,b)=>Math.random()*(b-a)+a,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -23,50 +23,51 @@ function particlesAt(x,y,color,n=6){for(let i=0;i<n;i++){let a=rand(0,TAU),v=ran
 function flash(message){let e=$('toast');e.textContent=message;e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash')}
 function format(v){return Number.isFinite(v)?Math.floor(v/60).toString().padStart(2,'0')+':'+(v%60).toFixed(2).padStart(5,'0'):'--:--'}
 function makeRacer(a,lane,color,name,bot=false,i=0){let p=coords(a,lane);return{x:p.x,y:p.y,angle:tangent(a),v:0,lap:1,progress:0,sector:0,theta:a,lapTime:0,finished:false,finishTime:0,bot,color,name,lane,skill:rand(.92,1.09),index:i,turnPower:2.75}}
-function start(){t=0;raceTime=0;score=0;nitro=100;driftScore=0;bestLap=Infinity;lapStart=0;particles=[];finishedOrder=[];let a=-PI/2;player=makeRacer(a,-17,'#ff4da6','YOU');bots=[makeRacer(a-.14,15,'#65faff','GHOST',true,0),makeRacer(a-.28,-10,'#ffdc77','VOLT',true,1),makeRacer(a-.42,22,'#b393ff','ECHO',true,2)];for(const b of bots)b.v=90;status='race';$('overlay').classList.add('hidden');flash('3 LAPS // GO!');sfx('start');hud();last=performance.now()}
+function start(){t=0;raceTime=0;score=0;nitro=100;driftScore=0;bestLap=Infinity;lapStart=0;particles=[];finishedOrder=[];let a=-PI/2;player=makeRacer(a,-17,'#ff4da6','YOU');player.vx=0;player.vy=0;bots=[makeRacer(a-.14,15,'#65faff','GHOST',true,0),makeRacer(a-.28,-10,'#ffdc77','VOLT',true,1),makeRacer(a-.42,22,'#b393ff','ECHO',true,2)];for(const b of bots)b.v=90;status='race';$('overlay').classList.add('hidden');flash('3 LAPS // GO!');sfx('start');hud();last=performance.now()}
 function show(title,heading,body,buttons){$('modal').innerHTML='<div class="eyebrow">✦ '+title+' ✦</div><h2>'+heading+'</h2><p>'+body+'</p>'+buttons;$('overlay').classList.remove('hidden')}
 function pause(){if(status==='race'){status='paused';show('RACE CONTROL','RACE <span>PAUSED</span>','Catch your breath. The competition is standing by.','<button class="btn pink" id="resume">RESUME ▶</button><button class="btn alt" id="retry">RESTART</button>')}else if(status==='paused'){status='race';$('overlay').classList.add('hidden');last=performance.now()}}
 function finish(){if(player.finished)return;player.finished=true;player.finishTime=raceTime;finishedOrder.push(player);status='finish';sfx('finish');let place=placeOf(player),record=player.finishTime<bestRace;if(record){bestRace=player.finishTime;try{localStorage.setItem('midnightVelocityBest',String(bestRace))}catch(e){}}score+=Math.max(0,4000-1000*(place-1));show('CHECKERED FLAG',place===1?'YOU <span>WIN!</span>':'RACE <span>COMPLETE</span>','FINISH POSITION: '+place+' / 4<br>RACE TIME: '+format(raceTime)+'<br>BEST LAP: '+format(bestLap)+'<br>SCORE: '+Math.round(score).toLocaleString()+(record?'<br>🏆 NEW PERSONAL RECORD!':''),'<button class="btn pink" id="retry">↻ RACE AGAIN</button>');hud()}
 function placeOf(r){return 1+[player,...bots].filter(o=>o!==r&&((o.lap>r.lap)||(o.lap===r.lap&&o.progress>r.progress))).length}
 function updateProgress(r,theta){if(r.finished)return;let forward=(theta-r.theta+TAU)%TAU;if(forward>PI){r.theta=theta;return}r.theta=theta;if(forward<.00001)return;r.progress+=forward/TAU;const progressSector=Math.floor(r.progress*4);if(progressSector>r.sector){r.sector=progressSector;if(r.sector%4===0){r.lap++;if(!r.bot){let lapTime=raceTime-lapStart;bestLap=Math.min(bestLap,lapTime);lapStart=raceTime;score+=Math.max(100,800-Math.round(lapTime*10));sfx('lap');flash(r.lap>raceLaps?'FINISH LINE!':'LAP '+r.lap+' / '+raceLaps)}if(r.lap>raceLaps){r.finished=true;r.finishTime=raceTime;finishedOrder.push(r);if(!r.bot){r.finished=false;finish()}}}}}
 function drivePlayer(dt){
- const gas=keys.has('w')||keys.has('ArrowUp'),brake=keys.has('s')||keys.has('ArrowDown'),left=keys.has('a')||keys.has('ArrowLeft'),right=keys.has('d')||keys.has('ArrowRight'),drift=keys.has('Shift'),boost=keys.has('Space')&&nitro>0&&player.v>18;
- const surface=project(player.x,player.y),off=!surface.inside;
- const max=off?135:(boost?410:305);
- if(gas)player.v+=(boost?285:205)*dt;
- else player.v-=105*dt;
- if(brake)player.v-=320*dt;
- if(off)player.v-=100*dt;
- player.v=clamp(player.v,-45,max);
- const steer=(right?1:0)-(left?1:0);
- const speedFactor=clamp(Math.abs(player.v)/145,.35,1.1);
- // Track-relative steering assist prevents a slight input from spinning the car.
- const guide=tangent(surface.a);
- const alignment=Math.atan2(Math.sin(guide-player.angle),Math.cos(guide-player.angle));
- if(!drift&&player.v>25&&surface.dist<trackWidth*.52){
-   const assist=clamp(1.65-Math.abs(steer)*.6,.45,1.65);
-   player.angle+=clamp(alignment,-assist*dt,assist*dt);
+ // Smooth arcade-direction controls: arrows choose heading, Space accelerates,
+ // Shift boosts, and Z adds a drift trail. No steering-wheel physics.
+ const right=keys.has('ArrowRight')||keys.has('d'),left=keys.has('ArrowLeft')||keys.has('a');
+ const down=keys.has('ArrowDown')||keys.has('s'),up=keys.has('ArrowUp')||keys.has('w');
+ const accelerating=keys.has('Space'),boost=keys.has('Shift')&&nitro>0,drift=keys.has('z');
+ let ix=Number(right)-Number(left),iy=Number(down)-Number(up);
+ let len=Math.hypot(ix,iy),moving=len>0;
+ if(moving){ix/=len;iy/=len}
+ else if(accelerating){ix=Math.cos(player.angle);iy=Math.sin(player.angle);moving=true}
+ const off=!project(player.x,player.y).inside;
+ const targetSpeed=moving?(boost?350:accelerating?255:170):0;
+ const desiredX=ix*targetSpeed,desiredY=iy*targetSpeed;
+ // Frame-rate independent smoothing gives fluid motion and immediate direction changes.
+ const blend=1-Math.exp(-(moving?8.5:5.5)*dt);
+ player.vx+=(desiredX-player.vx)*blend;
+ player.vy+=(desiredY-player.vy)*blend;
+ if(off){player.vx*=Math.exp(-.8*dt);player.vy*=Math.exp(-.8*dt)}
+ player.x=clamp(player.x+player.vx*dt,9,W-9);
+ player.y=clamp(player.y+player.vy*dt,9,H-9);
+ player.v=Math.hypot(player.vx,player.vy);
+ if(player.v>12){
+   const targetAngle=Math.atan2(player.vy,player.vx);
+   const difference=Math.atan2(Math.sin(targetAngle-player.angle),Math.cos(targetAngle-player.angle));
+   player.angle+=difference*Math.min(1,dt*12);
  }
- if(steer){
-   const turnRate=(drift?2.35:1.72)*speedFactor;
-   player.angle+=steer*turnRate*dt*(player.v<0?-1:1);
-   if(drift&&player.v>65){
-     driftScore+=dt*140;score+=dt*25;
-     particlesAt(player.x-Math.cos(player.angle)*14,player.y-Math.sin(player.angle)*14,'#ffd36c',2);
-   }
- }
- const moveAngle=player.angle+(drift&&steer?.10*steer:0);
- player.x+=Math.cos(moveAngle)*player.v*dt;
- player.y+=Math.sin(moveAngle)*player.v*dt;
- player.x=clamp(player.x,9,W-9);player.y=clamp(player.y,9,H-9);
- if(boost){nitro=Math.max(0,nitro-27*dt);if(Math.random()<.55)particlesAt(player.x-Math.cos(player.angle)*15,player.y-Math.sin(player.angle)*15,'#ffb753',2);if(engineClock<=0){sfx('boost');engineClock=.42}}
- else nitro=Math.min(100,nitro+(off?8:17)*dt);
+ if(drift&&player.v>75){driftScore+=dt*120;score+=dt*20;particlesAt(player.x-Math.cos(player.angle)*14,player.y-Math.sin(player.angle)*14,'#ffd36c',2)}
+ if(boost&&moving){nitro=Math.max(0,nitro-25*dt);if(Math.random()<.65)particlesAt(player.x-Math.cos(player.angle)*15,player.y-Math.sin(player.angle)*15,'#ffb753',2);if(engineClock<=0){sfx('boost');engineClock=.5}}
+ else nitro=Math.min(100,nitro+18*dt);
  engineClock-=dt;
- const p=project(player.x,player.y);if(p.inside)updateProgress(player,p.a);
- if(off&&Math.random()<.13)particlesAt(player.x,player.y,'#aa8f6a',3);
- for(const b of bots){if(Math.hypot(b.x-player.x,b.y-player.y)<24){player.v*=.80;b.v*=.93;particlesAt((b.x+player.x)/2,(b.y+player.y)/2,'#ffffff',10);if(shake<=0){shake=6;sfx('crash')}}}
+ const p=project(player.x,player.y);
+ if(p.inside)updateProgress(player,p.a);
+ if(off&&player.v>50&&Math.random()<.11)particlesAt(player.x,player.y,'#aa8f6a',2);
+ for(const b of bots){if(Math.hypot(b.x-player.x,b.y-player.y)<24){
+   player.vx*=.87;player.vy*=.87;b.v*=.96;
+   if(shake<=0){shake=4;sfx('crash');particlesAt((b.x+player.x)/2,(b.y+player.y)/2,'#ffffff',8)}
+ }}
  $('surface').textContent=off?'OFF-ROAD':'ASPHALT';
- $('engine').textContent=boost?'NITRO!':player.v>250?'REDLINE':player.v>50?'RACING':'IDLE';
+ $('engine').textContent=boost&&moving?'NITRO!':accelerating?'ACCELERATING':player.v>30?'CRUISING':'IDLE';
 }
 function driveBot(b,dt){if(b.finished)return;let theta=b.theta+dt*(.36+levelBonus(b))*(b.skill),target=coords(theta,b.lane+Math.sin(t*.7+b.index)*5),dx=target.x-b.x,dy=target.y-b.y;let desired=Math.atan2(dy,dx),delta=Math.atan2(Math.sin(desired-b.angle),Math.cos(desired-b.angle));b.angle+=clamp(delta,-3*dt,3*dt);let sp=clamp((155+b.index*5)*b.skill+Math.sin(t*.8+b.index)*13,125,220);b.v+=(sp-b.v)*Math.min(1,dt*2);let old=project(b.x,b.y);b.x+=Math.cos(b.angle)*b.v*dt;b.y+=Math.sin(b.angle)*b.v*dt;let p=project(b.x,b.y);if(p.dist>trackWidth*.37){let snap=.13;b.x+=(p.p.x-b.x)*snap;b.y+=(p.p.y-b.y)*snap}const fixed=project(b.x,b.y);updateProgress(b,fixed.a);if(b.lap>raceLaps){b.finished=true;b.finishTime=raceTime}}
 function levelBonus(b){return b.index*.018}
