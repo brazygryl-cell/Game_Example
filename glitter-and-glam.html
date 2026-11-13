@@ -36,7 +36,7 @@ function makeRival(brief,round){
  const outfit=pick('outfit'),hair=pick('hair'),shoe=pick('shoe'),accessory=pick('accessory');
  const color=Math.random()<Math.min(.94,.62+round*.04)?brief.colors[Math.floor(Math.random()*brief.colors.length)]:palettes[Math.floor(Math.random()*palettes.length)][0];
  const base=(outfit===brief.outfit?30:0)+(hair===brief.hair?15:0)+(shoe===brief.shoe?15:0)+(accessory===brief.accessory?15:0)+(brief.colors.includes(color)?25:0);
- const runway=Math.round(rand(3,14)),points=Math.min(115,base+runway);
+ const runway=Math.round(3+Math.random()*11),points=Math.min(115,base+runway);
  return{outfit,hair,shoe,accessory,color,points,runway};
 }
 function loadClient(){client=clients[index];rivalLook=makeRival(client,index);rivalGoal=rivalLook.points;remaining=75;look={outfit:'dress',hair:'long',shoe:'heels',accessory:'pearls',color:'rose',hairColor:'brunette'};mode='styling';$('overlay').classList.add('hidden');$('customer').textContent=client.name;$('event').textContent=client.event;$('request').textContent=client.prompt;$('tags').innerHTML='<span class="pill">'+client.tone.toUpperCase()+'</span>'+client.colors.map(c=>'<span class="pill">'+c+'</span>').join('');$('outfitLabel').textContent='LOOK '+String(index+1).padStart(2,'0')+' — IN PROGRESS';buildChoices();hud()}
