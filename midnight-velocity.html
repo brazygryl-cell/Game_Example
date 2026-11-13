@@ -22,7 +22,7 @@ function sfx(name){if(name==='boost')beep(150,.18,'sawtooth',.035,500);if(name==
 function particlesAt(x,y,color,n=6){for(let i=0;i<n;i++){let a=rand(0,TAU),v=rand(20,180);particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rand(.3,.9),max:.9,size:rand(1,4),color})}if(particles.length>600)particles.splice(0,particles.length-600)}
 function flash(message){let e=$('toast');e.textContent=message;e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash')}
 function format(v){return Number.isFinite(v)?Math.floor(v/60).toString().padStart(2,'0')+':'+(v%60).toFixed(2).padStart(5,'0'):'--:--'}
-function makeRacer(a,lane,color,name,bot=false,i=0){let p=coords(a,lane);return{x:p.x,y:p.y,angle:tangent(a),v:0,lap:1,progress:0,sector:0,theta:a,lapTime:0,finished:false,finishTime:0,bot,color,name,lane,skill:rand(.92,1.09),index:i,turnPower:2.75}}
+function makeRacer(a,lane,color,name,bot=false,i=0){let p=coords(a,lane);return{x:p.x,y:p.y,angle:tangent(a),v:0,lap:1,progress:0,sector:0,theta:a,lapTime:0,finished:false,finishTime:0,bot,color,name,lane,skill:rand(.92,1.09),index:i,turnPower:2.75,decision:0,desiredLane:lane,boostTimer:0,boostCooldown:rand(4,8),aggression:rand(.7,1.2),avoidTimer:0}}
 function start(){t=0;raceTime=0;score=0;nitro=100;driftScore=0;bestLap=Infinity;lapStart=0;particles=[];finishedOrder=[];let a=-PI/2;player=makeRacer(a,-17,'#ff4da6','YOU');player.vx=0;player.vy=0;bots=[makeRacer(a-.14,15,'#65faff','GHOST',true,0),makeRacer(a-.28,-10,'#ffdc77','VOLT',true,1),makeRacer(a-.42,22,'#b393ff','ECHO',true,2)];for(const b of bots)b.v=90;status='race';$('overlay').classList.add('hidden');flash('3 LAPS // GO!');sfx('start');hud();last=performance.now()}
 function show(title,heading,body,buttons){$('modal').innerHTML='<div class="eyebrow">✦ '+title+' ✦</div><h2>'+heading+'</h2><p>'+body+'</p>'+buttons;$('overlay').classList.remove('hidden')}
 function pause(){if(status==='race'){status='paused';show('RACE CONTROL','RACE <span>PAUSED</span>','Catch your breath. The competition is standing by.','<button class="btn pink" id="resume">RESUME ▶</button><button class="btn alt" id="retry">RESTART</button>')}else if(status==='paused'){status='race';$('overlay').classList.add('hidden');last=performance.now()}}
@@ -75,7 +75,59 @@ function drivePlayer(dt){
  $('surface').textContent=off?'OFF-ROAD':'ASPHALT';
  $('engine').textContent=boost&&moving&&!off?'NITRO!':accelerating?'ACCELERATING':player.v>30?'CRUISING':'IDLE';
 }
-function driveBot(b,dt){if(b.finished)return;let theta=b.theta+dt*(.36+levelBonus(b))*(b.skill),target=coords(theta,b.lane+Math.sin(t*.7+b.index)*5),dx=target.x-b.x,dy=target.y-b.y;let desired=Math.atan2(dy,dx),delta=Math.atan2(Math.sin(desired-b.angle),Math.cos(desired-b.angle));b.angle+=clamp(delta,-3*dt,3*dt);let sp=clamp((155+b.index*5)*b.skill+Math.sin(t*.8+b.index)*13,125,220);b.v+=(sp-b.v)*Math.min(1,dt*2);let old=project(b.x,b.y);b.x+=Math.cos(b.angle)*b.v*dt;b.y+=Math.sin(b.angle)*b.v*dt;let p=project(b.x,b.y);if(p.dist>trackWidth*.37){let snap=.13;b.x+=(p.p.x-b.x)*snap;b.y+=(p.p.y-b.y)*snap}const fixed=project(b.x,b.y);updateProgress(b,fixed.a);if(b.lap>raceLaps){b.finished=true;b.finishTime=raceTime}}
+function driveBot(b,dt){
+ if(b.finished)return;
+ // Look-ahead racing line, obstacle awareness and occasional tactical passing.
+ b.decision-=dt;b.boostCooldown-=dt;b.boostTimer=Math.max(0,b.boostTimer-dt);
+ const local=project(b.x,b.y);
+ if(b.decision<=0){
+   b.decision=rand(.65,1.45);
+   const rivals=[player,...bots.filter(o=>o!==b&&!o.finished)];
+   const opponent=rivals.filter(o=>{
+     const delta=((project(o.x,o.y).a-local.a)+TAU)%TAU;
+     return delta<.38&&Math.hypot(o.x-b.x,o.y-b.y)<135;
+   }).sort((a,c)=>Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(c.x-b.x,c.y-b.y))[0];
+   if(opponent){
+     const side=Math.sin(local.a)*(opponent.x-b.x)-Math.cos(local.a)*(opponent.y-b.y);
+     b.desiredLane=clamp(b.lane+(side>0?-28:28),-trackWidth*.29,trackWidth*.29);
+     b.avoidTimer=1.4;
+   }else if(b.avoidTimer<=0){
+     b.desiredLane=clamp(b.lane+Math.sin(t*.38+b.index*2)*12,-trackWidth*.3,trackWidth*.3);
+   }
+   if(b.boostCooldown<=0&&Math.abs(Math.sin(local.a))>.5&&Math.random()<b.aggression*.65){
+     b.boostTimer=rand(.65,1.4);b.boostCooldown=rand(5,9);
+   }
+ }
+ b.avoidTimer=Math.max(0,b.avoidTimer-dt);
+ const lookAhead=clamp(.12+b.v*.00042,.13,.27);
+ const heading=local.a+lookAhead;
+ const lane=b.desiredLane;
+ const target=coords(heading,lane);
+ const targetAngle=Math.atan2(target.y-b.y,target.x-b.x);
+ const diff=Math.atan2(Math.sin(targetAngle-b.angle),Math.cos(targetAngle-b.angle));
+ b.angle+=clamp(diff,-3.7*dt,3.7*dt);
+ const bend=Math.abs(Math.sin(local.a*2));
+ const obstacle=[player,...bots.filter(o=>o!==b&&!o.finished)].some(o=>{
+   const a=((project(o.x,o.y).a-local.a)+TAU)%TAU;
+   return a<.14&&Math.hypot(o.x-b.x,o.y-b.y)<62;
+ });
+ let top=(185+18*b.index)*b.skill*(1-.20*bend);
+ if(b.boostTimer>0)top*=1.24;
+ if(obstacle)top*=.83;
+ if(local.dist>trackWidth*.50)top=Math.min(top,85);
+ b.v+=(top-b.v)*Math.min(1,dt*(obstacle?3.5:2));
+ b.x+=Math.cos(b.angle)*b.v*dt;
+ b.y+=Math.sin(b.angle)*b.v*dt;
+ // Rejoin the track smoothly instead of snapping back.
+ const correction=project(b.x,b.y);
+ if(correction.dist>trackWidth*.32){
+   const correctionFactor=Math.min(.075,dt*1.5);
+   b.x+=(correction.p.x-b.x)*correctionFactor;
+   b.y+=(correction.p.y-b.y)*correctionFactor;
+ }
+ const fixed=project(b.x,b.y);
+ updateProgress(b,fixed.a);
+}
 function levelBonus(b){return b.index*.018}
 function update(dt){t+=dt;raceTime+=dt;drivePlayer(dt);bots.forEach(b=>driveBot(b,dt));shake=Math.max(0,shake-27*dt);for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.94;p.vy*=.94;p.life-=dt;if(p.life<=0)particles.splice(i,1)}hud()}
 function hud(){if(!player)return;$('speed').textContent=String(Math.round(Math.max(0,player.v)*.65)).padStart(3,'0');$('lap').textContent=Math.min(player.lap,raceLaps)+' / '+raceLaps;$('place').textContent=placeOf(player)+' / 4';$('time').textContent=format(raceTime);$('best').textContent=format(bestLap);$('score').textContent=String(Math.floor(score)).padStart(5,'0');$('nitroValue').textContent=Math.round(nitro)+'%';$('nitroBar').style.width=nitro+'%';$('drift').textContent=Math.floor(driftScore);$('record').textContent=format(bestRace)}
