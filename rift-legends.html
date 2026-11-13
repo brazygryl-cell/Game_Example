@@ -16,12 +16,12 @@ function ring(x,y,color,r=15){effects.push({kind:'ring',x,y,color,r,life:.55,max
 function flash(text){const e=$('notice');e.textContent=text;e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash')}
 function show(title,heading,body,buttons){$('modal').innerHTML='<div class="eyebrow">✦ '+title+' ✦</div><h2>'+heading+'</h2><p>'+body+'</p>'+buttons;$('overlay').classList.remove('hide')}
 function reset(){const p=profiles[heroType];hero={x:W*.43,y:H*.56,r:15,vx:0,vy:0,angle:0,hp:p.hp,maxHp:p.hp,speed:p.speed,cd:0,fireCd:0,dash:0,dashTime:0,inv:0,dome:0};allies=[{x:W*.39,y:H*.57,color:'#94ffa6',hp:100,max:100,fire:0,r:11,angle:0},{x:W*.47,y:H*.60,color:'#ffd779',hp:100,max:100,fire:0,r:11,angle:0}];enemies=[];bullets=[];effects=[];crystals=[];score=0;wave=1;kills=0;combo=1;comboTimer=0;control=0;ult=0;clock=0;shake=0;state='playing';spawnLeft=11;spawnTimer=.8;$('overlay').classList.add('hide');flash('ROUND 01 // PROTECT THE POINT');sfx('wave');last=performance.now();hud()}
-function spawn(){let edge=Math.floor(rand(0,4)),x=edge===0?-20:edge===1?W+20:rand(0,W),y=edge===2?-20:edge===3?H+20:rand(0,H);const boss=wave%4===0&&spawnLeft===1,tank=wave>=2&&Math.random()<.22,speedy=wave>=2&&Math.random()<.3;const hp=(boss?500:tank?130:speedy?52:75)*(1+(wave-1)*.23);enemies.push({x,y,r:boss?30:tank?21:speedy?10:13,hp,max:hp,speed:boss?50:tank?57:speedy?145:87,damage:boss?21:tank?15:9,attack:rand(.6,1.4),fire:boss?1.3:0,color:boss?'#ffdd6b':tank?'#b79dff':speedy?'#ff74b8':'#ff625e',value:boss?2500:tank?270:speedy?190:145,boss})}
+function spawn(){let edge=Math.floor(rand(0,4)),x=edge===0?-20:edge===1?W+20:rand(0,W),y=edge===2?-20:edge===3?H+20:rand(0,H);const boss=wave%4===0&&spawnLeft===1,tank=wave>=2&&Math.random()<.22,speedy=wave>=2&&Math.random()<.3;const hp=(boss?500:tank?130:speedy?52:75)*(1+(wave-1)*.23);enemies.push({x,y,r:boss?30:tank?21:speedy?10:13,hp,max:hp,speed:boss?50:tank?57:speedy?145:87,damage:boss?21:tank?15:9,attack:rand(.6,1.4),fire:boss?1.3:0,think:rand(.2,1),tactic:Math.random()<.35?'flank':'push',side:Math.random()<.5?-1:1,retreat:0,color:boss?'#ffdd6b':tank?'#b79dff':speedy?'#ff74b8':'#ff625e',value:boss?2500:tank?270:speedy?190:145,boss})}
 function damage(e,d){e.hp-=d;spark(e.x,e.y,e.color,5,90);if(e.hp<=0){const i=enemies.indexOf(e);if(i>=0){enemies.splice(i,1);kills++;combo=Math.min(5,combo+.12);comboTimer=3.5;score+=Math.round(e.value*combo);ult=clamp(ult+7+(e.boss?30:0),0,100);spark(e.x,e.y,e.color,e.boss?65:20,e.boss?300:160);if(Math.random()<.28||e.boss)crystals.push({x:e.x,y:e.y,r:9,type:Math.random()<.25?'heal':'charge'});sfx('kill')}}}
 function hurt(target,n){if(target===hero){if(hero.inv>0||hero.dome>0)return;hero.hp-=n;hero.inv=.42;shake=10;spark(hero.x,hero.y,'#ff7c93',18);if(hero.hp<=0){hero.hp=0;over()}}else{target.hp-=n;spark(target.x,target.y,'#ffe3ac',6);if(target.hp<=0)target.hp=0}sfx('hit')}
 function shootFrom(x,y,angle,owner,damageValue,speed,color,r=4){bullets.push({x:x+Math.cos(angle)*17,y:y+Math.sin(angle)*17,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r,owner,damage:damageValue,color,life:1.5})}
 function fire(){if(state!=='playing'||hero.fireCd>0)return;const p=profiles[heroType],a=Math.atan2(mouse.y-hero.y,mouse.x-hero.x);hero.angle=a;shootFrom(hero.x,hero.y,a,'hero',p.damage,p.projectile,p.color,heroType==='ember'?7:4);hero.fireCd=p.fire;spark(hero.x+Math.cos(a)*16,hero.y+Math.sin(a)*16,p.color,3,50);sfx('fire')}
-function ability(){if(state!=='playing'||hero.cd>0)return;hero.cd=heroType==='volt'?7:heroType==='ember'?6:11;sfx('special');if(heroType==='volt'){let targets=enemies.sort((a,b)=>Math.hypot(a.x-hero.x,a.y-hero.y)-Math.hypot(b.x-hero.x,b.y-hero.y)).slice(0,5);for(const e of [...targets]){ring(e.x,e.y,'#67fcff',30);damage(e,70)}}else if(heroType==='ember'){let ax=Math.cos(hero.angle),ay=Math.sin(hero.angle);hero.x=clamp(hero.x+ax*180,20,W-20);hero.y=clamp(hero.y+ay*180,20,H-20);hero.inv=.6;ring(hero.x,hero.y,'#ff9775',75);for(const e of [...enemies])if(Math.hypot(e.x-hero.x,e.y-hero.y)<110)damage(e,90)}else{hero.hp=Math.min(hero.maxHp,hero.hp+50);for(const a of allies)a.hp=Math.min(a.max,a.hp+45);ring(hero.x,hero.y,'#b3ffa7',110);spark(hero.x,hero.y,'#b3ffa7',30)}}
+function ability(){if(state!=='playing'||hero.cd>0)return;hero.cd=heroType==='volt'?7:heroType==='ember'?6:11;sfx('special');if(heroType==='volt'){let targets=[...enemies].sort((a,b)=>Math.hypot(a.x-hero.x,a.y-hero.y)-Math.hypot(b.x-hero.x,b.y-hero.y)).slice(0,5);for(const e of [...targets]){ring(e.x,e.y,'#67fcff',30);damage(e,70)}}else if(heroType==='ember'){let ax=Math.cos(hero.angle),ay=Math.sin(hero.angle);hero.x=clamp(hero.x+ax*180,20,W-20);hero.y=clamp(hero.y+ay*180,20,H-20);hero.inv=.6;ring(hero.x,hero.y,'#ff9775',75);for(const e of [...enemies])if(Math.hypot(e.x-hero.x,e.y-hero.y)<110)damage(e,90)}else{hero.hp=Math.min(hero.maxHp,hero.hp+50);for(const a of allies)a.hp=Math.min(a.max,a.hp+45);ring(hero.x,hero.y,'#b3ffa7',110);spark(hero.x,hero.y,'#b3ffa7',30)}}
 function ultimate(){if(state!=='playing'||ult<100)return;ult=0;sfx('special');shake=15;if(heroType==='volt'){for(const e of [...enemies]){ring(e.x,e.y,'#56efff',45);damage(e,175)}flash('THUNDERSTORM!')}else if(heroType==='ember'){ring(hero.x,hero.y,'#ff9775',225);for(const e of [...enemies])if(Math.hypot(e.x-hero.x,e.y-hero.y)<245)damage(e,275);flash('METEOR STRIKE!')}else{hero.dome=8;hero.hp=Math.min(hero.maxHp,hero.hp+65);allies.forEach(a=>a.hp=Math.min(a.max,a.hp+80));ring(hero.x,hero.y,'#a99aff',195);flash('AEGIS DOME!')}}
 function dash(){if(state!=='playing'||hero.dash>0)return;hero.dash=2.2;hero.dashTime=.16;hero.inv=.28;ring(hero.x,hero.y,'#f9fdff',24)}
 function pause(){if(state==='playing'){state='paused';show('SYSTEM PAUSED','BATTLE <em>PAUSED</em>','The team is standing by.','<button class="btn" id="resume">RESUME ▶</button><button class="btn alt" id="retry">RESTART</button>')}else if(state==='paused'){state='playing';$('overlay').classList.add('hide');last=performance.now()}}
@@ -30,8 +30,95 @@ function nextWave(){wave++;hero.hp=Math.min(hero.maxHp,hero.hp+25);allies.forEac
 function update(dt){clock+=dt;shake=Math.max(0,shake-dt*40);hero.cd=Math.max(0,hero.cd-dt);hero.fireCd=Math.max(0,hero.fireCd-dt);hero.dash=Math.max(0,hero.dash-dt);hero.inv=Math.max(0,hero.inv-dt);hero.dome=Math.max(0,hero.dome-dt);if(comboTimer>0)comboTimer-=dt;else combo=Math.max(1,combo-dt*.6);
 let mx=Number(keys.has('d')||keys.has('ArrowRight'))-Number(keys.has('a')||keys.has('ArrowLeft')),my=Number(keys.has('s')||keys.has('ArrowDown'))-Number(keys.has('w')||keys.has('ArrowUp'));let m=Math.hypot(mx,my)||1;mx/=m;my/=m;const speed=hero.speed*(hero.dashTime>0?3.7:1),blend=1-Math.exp(-12*dt);hero.vx+=(mx*speed-hero.vx)*blend;hero.vy+=(my*speed-hero.vy)*blend;if(hero.dashTime>0)hero.dashTime-=dt;hero.x=clamp(hero.x+hero.vx*dt,18,W-18);hero.y=clamp(hero.y+hero.vy*dt,18,H-18);
 if(mouse.down||keys.has('j'))fire();spawnTimer-=dt;if(spawnLeft>0&&spawnTimer<=0){spawn();spawnLeft--;spawnTimer=Math.max(.22,.85-wave*.045)}
-for(const a of allies){if(a.hp<=0)continue;let target=enemies.reduce((v,e)=>!v||Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(v.x-a.x,v.y-a.y)?e:v,null);let follow={x:hero.x+(a.color==='#94ffa6'?-35:35),y:hero.y+33};if(target&&Math.hypot(target.x-a.x,target.y-a.y)<225){follow=target;a.angle=Math.atan2(target.y-a.y,target.x-a.x)}let dist=Math.hypot(follow.x-a.x,follow.y-a.y);if(dist>60){a.x+=(follow.x-a.x)/dist*135*dt;a.y+=(follow.y-a.y)/dist*135*dt}a.fire-=dt;if(target&&Math.hypot(target.x-a.x,target.y-a.y)<280&&a.fire<=0){shootFrom(a.x,a.y,a.angle,'ally',13,530,a.color,4);a.fire=.68}}
-for(const e of enemies){let targets=[hero,...allies.filter(a=>a.hp>0)],target=targets.reduce((v,z)=>!v||Math.hypot(e.x-z.x,e.y-z.y)<Math.hypot(e.x-v.x,e.y-v.y)?z:v,null);let tx=target.x-e.x,ty=target.y-e.y,d=Math.hypot(tx,ty)||1;if(d>e.r+target.r+7){e.x+=tx/d*e.speed*dt;e.y+=ty/d*e.speed*dt}e.attack-=dt;if(d<e.r+target.r+9&&e.attack<=0){hurt(target,e.damage);e.attack=e.boss?.68:1.1}if(e.boss){e.fire-=dt;if(e.fire<=0){let a=Math.atan2(ty,tx);for(let j=-1;j<=1;j++)shootFrom(e.x,e.y,a+j*.25,'enemy',14,265,'#ffca66',6);e.fire=1.8}}}
+for(const a of allies){
+ if(a.hp<=0)continue;
+ a.fire-=dt;
+ // Support ally seeks cover by the hero; striker intercepts enemies threatening the point.
+ const support=a.color==='#94ffa6';
+ const threatened=enemies.filter(e=>Math.hypot(e.x-W/2,e.y-H/2)<145||Math.hypot(e.x-hero.x,e.y-hero.y)<140);
+ let pool=threatened.length?threatened:enemies;
+ let target=pool.reduce((v,e)=>{
+   const distance=Math.hypot(e.x-a.x,e.y-a.y);
+   const score=distance-(e.boss?45:0)-(e.hp<30?25:0);
+   return !v||score<v.score?{e,score}:v;
+ },null)?.e;
+ let follow=support?{x:hero.x-48,y:hero.y+35}:{x:W/2+48,y:H/2+35};
+ if(target){
+   const distance=Math.hypot(target.x-a.x,target.y-a.y);
+   const ideal=support?165:125;
+   if(distance>ideal+35)follow={x:target.x,y:target.y};
+   else if(distance<ideal-35)follow={x:a.x-(target.x-a.x),y:a.y-(target.y-a.y)};
+   a.angle=Math.atan2(target.y-a.y,target.x-a.x);
+ }
+ const distance=Math.hypot(follow.x-a.x,follow.y-a.y);
+ if(distance>8){
+   const step=Math.min(distance,(support?170:195)*dt);
+   a.x=clamp(a.x+(follow.x-a.x)/distance*step,12,W-12);
+   a.y=clamp(a.y+(follow.y-a.y)/distance*step,12,H-12);
+ }
+ if(target&&Math.hypot(target.x-a.x,target.y-a.y)<285&&a.fire<=0){
+   // Lead moving enemies slightly, based on their current target and velocity.
+   const lead=Math.min(.19,Math.hypot(target.x-a.x,target.y-a.y)/530);
+   const aim=Math.atan2(target.y-a.y+(target.vy||0)*lead,target.x-a.x+(target.vx||0)*lead);
+   a.angle=aim;
+   shootFrom(a.x,a.y,aim,'ally',support?12:17,530,a.color,4);
+   a.fire=support?.52:.65;
+ }
+ // Support hero gets periodic emergency assistance from the medic.
+ if(support&&a.hp>0&&hero.hp<hero.maxHp*.42){
+   a.healCd=(a.healCd||0)-dt;
+   if(a.healCd<=0&&Math.hypot(a.x-hero.x,a.y-hero.y)<155){
+     hero.hp=Math.min(hero.maxHp,hero.hp+12);
+     a.healCd=9;ring(hero.x,hero.y,'#94ffa6',38);
+   }
+ }
+}
+for(const e of [...enemies]){
+ if(!enemies.includes(e))continue;
+ e.think-=dt;
+ if(e.think<=0){
+   e.think=rand(.8,1.7);
+   if(e.hp<e.max*.27&&!e.boss)e.retreat=rand(.6,1.4);
+   else if(Math.random()<.35)e.tactic=e.tactic==='flank'?'push':'flank';
+ }
+ e.retreat=Math.max(0,e.retreat-dt);
+ // Tank enemies pressure the control point; faster units flank the player.
+ let targets=[hero,...allies.filter(a=>a.hp>0)];
+ let target=targets.reduce((v,z)=>{
+   const distance=Math.hypot(e.x-z.x,e.y-z.y);
+   const score=distance+(z===hero&&hero.dome>0?150:0)+(z.hp<z.maxHp*.3?-55:0);
+   return !v||score<v.score?{z,score}:v;
+ },null)?.z||hero;
+ if(e.r>=20&&!e.boss&&Math.hypot(e.x-W/2,e.y-H/2)>100){
+   target={x:W/2,y:H/2,r:8,hp:999,maxHp:999};
+ }
+ let tx=target.x-e.x,ty=target.y-e.y,d=Math.hypot(tx,ty)||1;
+ let ux=tx/d,uy=ty/d;
+ if(e.retreat>0){ux=-ux;uy=-uy}
+ else if(e.tactic==='flank'&&!e.boss&&d>55){
+   const flank=.54*e.side;
+   const px=ux,py=uy;ux=px*Math.cos(flank)-py*Math.sin(flank);uy=px*Math.sin(flank)+py*Math.cos(flank);
+ }
+ const keepDistance=e.boss?100:e.r<=10?40:e.r>=20?10:14;
+ e.vx=ux*e.speed*(e.boss?1:.98);
+ e.vy=uy*e.speed*(e.boss?1:.98);
+ if(d>keepDistance||e.retreat>0){
+   e.x=clamp(e.x+e.vx*dt,-20,W+20);
+   e.y=clamp(e.y+e.vy*dt,-20,H+20);
+ }else{e.vx=0;e.vy=0}
+ e.attack-=dt;
+ if(target.hp!==999&&d<e.r+target.r+9&&e.attack<=0){
+   hurt(target,e.damage);e.attack=e.boss?.72:1.1;
+ }
+ if(e.boss){
+   e.fire-=dt;
+   if(e.fire<=0){
+     let aim=Math.atan2(hero.y-e.y,hero.x-e.x);
+     for(let j=-1;j<=1;j++)shootFrom(e.x,e.y,aim+j*.25,'enemy',14,265,'#ffca66',6);
+     e.fire=1.7;
+   }
+ }
+}
 for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;let gone=b.life<=0||b.x<-40||b.x>W+40||b.y<-40||b.y>H+40;if(!gone){if(b.owner==='enemy'){for(const target of [hero,...allies.filter(a=>a.hp>0)])if(Math.hypot(b.x-target.x,b.y-target.y)<b.r+target.r){hurt(target,b.damage);gone=true;break}}else{for(const e of [...enemies])if(Math.hypot(b.x-e.x,b.y-e.y)<b.r+e.r){damage(e,b.damage);gone=true;break}}}if(gone)bullets.splice(i,1)}
 for(let i=crystals.length-1;i>=0;i--){const p=crystals[i];if(Math.hypot(p.x-hero.x,p.y-hero.y)<p.r+hero.r+7){if(p.type==='heal')hero.hp=Math.min(hero.maxHp,hero.hp+22);else ult=Math.min(100,ult+19);spark(p.x,p.y,p.type==='heal'?'#a5ffb1':'#ffe179',14);crystals.splice(i,1);beep(850,.14,'sine',.05,1100)}}
 for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.life-=dt;if(e.kind==='spark'){e.x+=e.vx*dt;e.y+=e.vy*dt;e.vx*=.96;e.vy*=.96}if(e.life<=0)effects.splice(i,1)}
