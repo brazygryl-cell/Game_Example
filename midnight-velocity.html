@@ -5,7 +5,7 @@
 </style></head><body><main class="wrap"><header class="top"><div><div class="sub">STREET ARCADE // CIRCUIT 03</div><div class="brand">MIDNIGHT <em>VELOCITY</em></div></div><div class="buttons"><button id="neon" class="btn alt">✦ NEON RIFT</button><button id="orbit" class="btn alt">✦ ORBIT BREAKER</button><button id="fullscreen" class="btn alt">⛶ FULLSCREEN</button><button id="pause" class="btn alt">⏸ PAUSE</button><button id="sound" class="btn alt">🔊 ON</button></div></header>
 <section class="hud"><div class="stat"><small>SPEED</small><strong id="speed">000</strong></div><div class="stat"><small>LAP</small><strong id="lap">1 / 3</strong></div><div class="stat"><small>POSITION</small><strong id="place">1 / 4</strong></div><div class="stat"><small>RACE TIME</small><strong id="time">00:00</strong></div><div class="stat"><small>BEST LAP</small><strong id="best">--:--</strong></div><div class="stat"><small>SCORE</small><strong id="score">00000</strong></div></section>
 <div class="layout"><section class="screen" id="screen"><canvas id="track"></canvas><div class="glass"></div><div class="toast" id="toast"></div><div class="overlay" id="overlay"><div class="modal" id="modal"><div class="eyebrow">✦ AFTER HOURS RACING ✦</div><h2>RULE THE <span>NEON STREETS</span></h2><p>Race three aggressive AI opponents around a glowing midnight circuit. Steer directly with the arrow keys, hold Space to accelerate, and Shift to unleash nitro on the straights. Finish three laps as fast as you can!</p><div class="tags"><span class="tag">ARROWS / WASD = MOVE</span><span class="tag">SPACE = ACCELERATE</span><span class="tag">SHIFT = NITRO</span><span class="tag">Z = DRIFT EFFECT</span></div><button class="btn pink" id="start">START YOUR ENGINES ▶</button></div></div></section>
-<aside class="side"><div class="panel"><h3>▸ RACE TELEMETRY</h3><div class="row"><span>NITRO BOOST</span><b id="nitroValue">100%</b></div><div class="meter"><div id="nitroBar"></div></div><div class="row"><span>DRIFT COMBO</span><b id="drift">0</b></div><div class="row"><span>TRACK SURFACE</span><b id="surface">ASPHALT</b></div><div class="row"><span>ENGINE</span><b id="engine">IDLE</b></div><div class="row"><span>LEADERBOARD</span><b id="record">--:--</b></div><button id="restart" class="btn pink" style="margin-top:13px">↻ RESTART RACE</button></div><div class="panel"><h3>▸ RACE GUIDE</h3><p>Use the arrow keys to guide your car smoothly around the circuit. Hold Space for acceleration and Shift for nitro. Follow the glowing lane and cross every quarter of the circuit to count a lap. Going off-road slows your car. Nitro refills while you're not boosting. Opponent cars follow racing lines and will fight for first place.</p><div class="legend"><b>MAGENTA</b> = YOUR CAR</div><div class="legend"><b>CYAN / GOLD / PURPLE</b> = RIVALS</div><div class="legend"><b>GOLD SPARKS</b> = DRIFT BONUS</div></div></aside></div>
+<aside class="side"><div class="panel"><h3>▸ RACE TELEMETRY</h3><div class="row"><span>NITRO BOOST</span><b id="nitroValue">100%</b></div><div class="meter"><div id="nitroBar"></div></div><div class="row"><span>DRIFT COMBO</span><b id="drift">0</b></div><div class="row"><span>TRACK SURFACE</span><b id="surface">ASPHALT</b></div><div class="row"><span>ENGINE</span><b id="engine">IDLE</b></div><div class="row"><span>LEADERBOARD</span><b id="record">--:--</b></div><button id="restart" class="btn pink" style="margin-top:13px">↻ RESTART RACE</button></div><div class="panel"><h3>▸ RACE GUIDE</h3><p>Use the arrow keys to guide your car smoothly around the circuit. Hold Space for acceleration and Shift for nitro. Follow the glowing lane and cross every quarter of the circuit to count a lap. Driving through the green grass cuts your top speed drastically—even with nitro. Nitro refills while you're not boosting. Opponent cars follow racing lines and will fight for first place.</p><div class="legend"><b>MAGENTA</b> = YOUR CAR</div><div class="legend"><b>CYAN / GOLD / PURPLE</b> = RIVALS</div><div class="legend"><b>GOLD SPARKS</b> = DRIFT BONUS</div></div></aside></div>
 <div class="touch"><div><button data-k="ArrowLeft">◀</button><button data-k="ArrowRight">▶</button></div><div><button data-k="ArrowUp">▲</button><button data-k="ArrowDown">▼</button><button data-k="Space">GAS</button><button class="nitro" data-k="Shift">NITRO</button></div></div><footer class="bottom"><span>MIDNIGHT VELOCITY // ARCADE RACING SIMULATION</span><span>VANILLA JAVASCRIPT • PROCEDURAL GRAPHICS • WEB AUDIO</span></footer></main>
 <script>
 (()=>{'use strict';
@@ -40,13 +40,19 @@ function drivePlayer(dt){
  if(moving){ix/=len;iy/=len}
  else if(accelerating){ix=Math.cos(player.angle);iy=Math.sin(player.angle);moving=true}
  const off=!project(player.x,player.y).inside;
- const targetSpeed=moving?(boost?350:accelerating?255:170):0;
+ // Grass is a serious shortcut penalty: cap speed even during nitro.
+ const targetSpeed=moving?(off? (accelerating?92:70) : boost?350:accelerating?255:170):0;
  const desiredX=ix*targetSpeed,desiredY=iy*targetSpeed;
  // Frame-rate independent smoothing gives fluid motion and immediate direction changes.
  const blend=1-Math.exp(-(moving?8.5:5.5)*dt);
  player.vx+=(desiredX-player.vx)*blend;
  player.vy+=(desiredY-player.vy)*blend;
- if(off){player.vx*=Math.exp(-.8*dt);player.vy*=Math.exp(-.8*dt)}
+ if(off){
+  const grassCap=accelerating?94:72;
+  const current=Math.hypot(player.vx,player.vy);
+  if(current>grassCap){const braking=Math.max(grassCap,current-720*dt);player.vx*=braking/current;player.vy*=braking/current}
+  player.vx*=Math.exp(-1.4*dt);player.vy*=Math.exp(-1.4*dt);
+ }
  player.x=clamp(player.x+player.vx*dt,9,W-9);
  player.y=clamp(player.y+player.vy*dt,9,H-9);
  player.v=Math.hypot(player.vx,player.vy);
@@ -56,7 +62,7 @@ function drivePlayer(dt){
    player.angle+=difference*Math.min(1,dt*12);
  }
  if(drift&&player.v>75){driftScore+=dt*120;score+=dt*20;particlesAt(player.x-Math.cos(player.angle)*14,player.y-Math.sin(player.angle)*14,'#ffd36c',2)}
- if(boost&&moving){nitro=Math.max(0,nitro-25*dt);if(Math.random()<.65)particlesAt(player.x-Math.cos(player.angle)*15,player.y-Math.sin(player.angle)*15,'#ffb753',2);if(engineClock<=0){sfx('boost');engineClock=.5}}
+ if(boost&&moving&&!off){nitro=Math.max(0,nitro-25*dt);if(Math.random()<.65)particlesAt(player.x-Math.cos(player.angle)*15,player.y-Math.sin(player.angle)*15,'#ffb753',2);if(engineClock<=0){sfx('boost');engineClock=.5}}
  else nitro=Math.min(100,nitro+18*dt);
  engineClock-=dt;
  const p=project(player.x,player.y);
@@ -67,7 +73,7 @@ function drivePlayer(dt){
    if(shake<=0){shake=4;sfx('crash');particlesAt((b.x+player.x)/2,(b.y+player.y)/2,'#ffffff',8)}
  }}
  $('surface').textContent=off?'OFF-ROAD':'ASPHALT';
- $('engine').textContent=boost&&moving?'NITRO!':accelerating?'ACCELERATING':player.v>30?'CRUISING':'IDLE';
+ $('engine').textContent=boost&&moving&&!off?'NITRO!':accelerating?'ACCELERATING':player.v>30?'CRUISING':'IDLE';
 }
 function driveBot(b,dt){if(b.finished)return;let theta=b.theta+dt*(.36+levelBonus(b))*(b.skill),target=coords(theta,b.lane+Math.sin(t*.7+b.index)*5),dx=target.x-b.x,dy=target.y-b.y;let desired=Math.atan2(dy,dx),delta=Math.atan2(Math.sin(desired-b.angle),Math.cos(desired-b.angle));b.angle+=clamp(delta,-3*dt,3*dt);let sp=clamp((155+b.index*5)*b.skill+Math.sin(t*.8+b.index)*13,125,220);b.v+=(sp-b.v)*Math.min(1,dt*2);let old=project(b.x,b.y);b.x+=Math.cos(b.angle)*b.v*dt;b.y+=Math.sin(b.angle)*b.v*dt;let p=project(b.x,b.y);if(p.dist>trackWidth*.37){let snap=.13;b.x+=(p.p.x-b.x)*snap;b.y+=(p.p.y-b.y)*snap}const fixed=project(b.x,b.y);updateProgress(b,fixed.a);if(b.lap>raceLaps){b.finished=true;b.finishTime=raceTime}}
 function levelBonus(b){return b.index*.018}
