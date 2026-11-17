@@ -57,7 +57,7 @@ function drawBackdrop(){
  layerTrees(.34,level===1?'#295b5e':'#51486f',49,28);layerTrees(.51,level===1?'#27614c':'#665177',61,0);
  if(level===2){ctx.fillStyle='#7864b0aa';for(let i=0;i<7;i++){let x=95+i*167-cam*.16,y=320+i%2*36;ctx.fillRect(x,y,48,140);ctx.fillStyle='#b4a1e3';ctx.beginPath();ctx.moveTo(x-9,y);ctx.lineTo(x+24,y-66);ctx.lineTo(x+57,y);ctx.fill();ctx.fillStyle='#7864b0aa'}}
 }
-function drawTerrain(p){if(spriteReady&&p.h>=45){for(let xx=p.x;xx<p.x+p.w;xx+=38)spriteFrame(0,4,xx,p.y-10,Math.min(40,p.x+p.w-xx),42)}
+function drawTerrain(p){
  const top=level===1?'#63c58f':'#cc94dc',earth=level===1?'#345b55':'#4c3c69';
  ctx.shadowColor=top;ctx.shadowBlur=10;ctx.fillStyle=earth;ctx.fillRect(p.x,p.y,p.w,p.h);ctx.shadowBlur=0;
  ctx.fillStyle=level===1?'#69ae83':'#9275b8';ctx.fillRect(p.x,p.y,p.w,Math.min(p.h,12));
@@ -68,7 +68,7 @@ function drawTerrain(p){if(spriteReady&&p.h>=45){for(let xx=p.x;xx<p.x+p.w;xx+=3
   if((x/32|0)%3===0){ctx.strokeStyle=level===1?'#4e9e70':'#bb82c8';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+6,p.y+5);ctx.lineTo(x+6,p.y-5);ctx.moveTo(x+6,p.y+3);ctx.lineTo(x+2,p.y-2);ctx.moveTo(x+6,p.y+3);ctx.lineTo(x+11,p.y-3);ctx.stroke()}
   if((x/32|0)%7===0){ctx.fillStyle='#fff1ac';ctx.fillRect(x+16,p.y-7,3,3)}
  }
- ctx.fillStyle=top;ctx.fillRect(p.x,p.y,p.w,5);
+ ctx.fillStyle=top;ctx.fillRect(p.x,p.y,p.w,5);if(spriteReady&&p.h>=45){for(let xx=p.x;xx<p.x+p.w;xx+=38)spriteFrame(0,4,xx,p.y-19,Math.min(40,p.x+p.w-xx),48)}
  if(p.h<24){ctx.fillStyle='#43355b';for(let x=p.x+18;x<p.x+p.w;x+=38){ctx.beginPath();ctx.moveTo(x,p.y+p.h);ctx.lineTo(x+8,p.y+p.h+11);ctx.lineTo(x+16,p.y+p.h);ctx.fill()}}
 }
 function drawWorldDecor(){
