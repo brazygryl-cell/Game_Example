@@ -60,8 +60,7 @@ let look=defaultLook();
 function resize(){
  const r=stage.getBoundingClientRect();
  W=Math.max(1,r.width);H=Math.max(1,r.height);
- // Glitter & Glam is drawn with vector paths, not low-resolution pixel sprites.
- // Match the display's real pixel density (up to 3x) for sharp hair, eyes, outlines and fabrics.
+ // Render the 192x256 pixel sprite atlas at device resolution without interpolation.
  dpr=Math.min(3,Math.max(1,window.devicePixelRatio||1));
  const pixelW=Math.round(W*dpr),pixelH=Math.round(H*dpr);
  if(canvas.width!==pixelW||canvas.height!==pixelH){canvas.width=pixelW;canvas.height=pixelH}
@@ -98,12 +97,17 @@ function hype(msg){const el=$('hype');el.textContent=msg;el.classList.remove('po
 function pose(){if(mode!=='runway'||beatWaiting)return;const elapsed=performance.now()/1000-beatStart;const progress=(elapsed/beatSpeed)%1;const distance=Math.abs(progress-.5);const earned=distance<.065?30:distance<.135?20:distance<.23?10:0;beatCombo=earned?beatCombo+1:0;beatPoints+=earned+(earned?beatCombo*3:0);hype(earned===30?'PERFECT! ✨':earned>=20?'FABULOUS!':earned?'CUTE!':'MISS!');tone(earned?700:180,.12,'triangle',.04,earned?1050:70);sparkle(W/2,H*.43,earned?20:4);beat++;if(beat>=4){beatWaiting=true;setTimeout(()=>{$('rhythm').classList.remove('active');judge()},650)}else{beatStart=performance.now()/1000;beatSpeed=Math.max(.78,beatSpeed-.1);$('beatScore').textContent='POSE '+(beat+1)+' / 4 · COMBO x'+beatCombo}}
 function judge(){if(mode!=='runway')return;mode='judging';const tests=[['Outfit',outfitGroup(look.outfit)===client.outfit,30],['Hair',hairGroup(look.hair)===client.hair,15],['Shoes',shoeGroup(look.shoe)===client.shoe,15],['Accessory',accessoryGroup(look.accessory)===client.accessory,15],['Palette',client.colors.includes(look.color),25]];let points=tests.reduce((a,[,match,value])=>a+(match?value:0),0);const timeBonus=Math.round(remaining/75*15);points=Math.min(115,points+timeBonus+Math.round(beatPoints*.23));const stars=points>=94?5:points>=76?4:points>=58?3:points>=39?2:1;const won=points>=rivalGoal;wins=won?wins+1:0;streak=stars>=4?streak+1:0;const streakBonus=streak>=2?streak*15:0;const victoryBonus=won?35+wins*10:0;coins+=Math.round(points*.7)+streakBonus+victoryBonus;rep+=stars;index++;if(coins>best){best=coins;try{localStorage.setItem('glitterGlamBest',String(best))}catch(e){}}let compliment=stars===5?'ICONIC! The crowd is OBSESSED.':stars>=4?'Gorgeous! Your client is glowing.':stars===3?'Cute look! A few details could match better.':'A bold choice! Review the client brief next time.';const rivalry=won?'🏆 YOU BEAT THE RIVAL! +'+victoryBonus+' COINS':'💔 RIVAL WINS THIS ROUND — '+rivalGoal+' POINTS TO BEAT';const rivalDetails='RIVAL LOOK: '+outfitGroup(rivalLook.outfit).toUpperCase()+' / '+hairGroup(rivalLook.hair).toUpperCase()+' / '+shoeGroup(rivalLook.shoe).toUpperCase()+' / '+rivalLook.color.toUpperCase();const details=tests.map(([name,match])=>'<span style="color:'+(match?'#299c75':'#bd5385')+'">'+(match?'✓':'✗')+' '+name+'</span>').join(' · ');sparkle(W/2,H/2,60);melody();$('outfitLabel').textContent='RUNWAY REVIEW';const done=index>=clients.length;const heading=done?'BOUTIQUE <span>FINALE!</span>':'RUNWAY <span>REVIEW</span>';const next=done?'<button class="btn" id="again">START A NEW SEASON ♡</button>':'<button class="btn" id="nextClient">STYLE NEXT CLIENT →</button>';$('modal').innerHTML='<div class="tagline">✦ '+client.name+' • '+client.event+' ✦</div><h2>'+heading+'</h2><div class="stars">'+('★'.repeat(stars)+'☆'.repeat(5-stars))+'</div><p><strong>'+compliment+'</strong></p><p style="font-weight:800;color:#ae397f">'+points+' STYLE POINTS · '+timeBonus+' SPEED BONUS · '+beatPoints+' RUNWAY RHYTHM'+(streakBonus?' · '+streakBonus+' STREAK BONUS':'')+'</p><p style="font-weight:800;color:#bf3c82">'+rivalry+'</p><p style="font-size:12px;line-height:2">'+details+'</p><p style="font-size:12px">'+rivalDetails+'</p><p>GLAM COINS: '+coins+' · TOTAL STARS: '+rep+'</p>'+next;$('overlay').classList.remove('hidden');hud()}
 // Real layered pixel rendering: 96x128 offscreen art, nearest-neighbor presentation.
-const pixelCanvas=document.createElement('canvas');pixelCanvas.width=96;pixelCanvas.height=128;
-const px=pixelCanvas.getContext('2d',{alpha:true});px.imageSmoothingEnabled=false;
+const pixelCanvas=document.createElement('canvas');pixelCanvas.width=192;pixelCanvas.height=256;
+const px=pixelCanvas.getContext('2d',{alpha:true});px.imageSmoothingEnabled=false;let spriteCacheKey='';
 function block(x,y,w,h,c){px.fillStyle=c;px.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
 function shade(hex,amount){const color=hex.replace('#','');const n=parseInt(color.length===3?color.split('').map(c=>c+c).join(''):color,16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;return '#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v+amount))).toString(16).padStart(2,'0')).join('')}
 function pixelCharacter(){
- px.clearRect(0,0,96,128);
+ const cacheKey=Object.entries(look).map(([k,v])=>k+':'+v).join('|');
+ if(cacheKey===spriteCacheKey)return pixelCanvas;
+ spriteCacheKey=cacheKey;
+ px.setTransform(1,0,0,1,0,0);
+ px.clearRect(0,0,192,256);
+ px.setTransform(2,0,0,2,0,0);
  const skin=colorOf(skinTones,look.skin,'#c68c63'),hair=colorOf(hairColors,look.hairColor,'#563a3a'),cloth=colorOf(palettes,look.color,'#f26caa');
  const dark=shade(cloth,-35),light=shade(cloth,37),hs=shade(hair,-22),sm=shade(skin,-28);
  const walk=mode==='runway'||mode==='judging'?Math.round(Math.sin(time*8)*2):Math.round(Math.sin(time*2.3));
@@ -170,8 +174,62 @@ function pixelCharacter(){
  else if(acc===4||acc===13){block(24,20,16,9,'#faabd1');block(60,20,16,9,'#faabd1');block(42,23,14,7,'#ffe0ef')}
  else if(acc===8){block(27,12,45,6,'#955b96');block(34,3,30,14,'#b071ad')}
  else{for(let i=0;i<4;i++)block(40+i*5,54+i%2,3,4,'#ffefbc');if(acc>9){block(68,37,6,9,'#f9d78a');block(25,37,6,9,'#f9d78a')}}
- // Tiny fabric highlights give the look dimensional pixel texture
- for(let i=0;i<8;i++){const xx=35+(i*13)%28,yy=60+(i*17)%22;block(xx,yy,2,2,'#ffffff55')}
+ // Fabric texture, tailored seams and pixel embroidery.
+ const outfitId=Number(look.outfit),fabricStart=set?56:58;
+ for(let i=0;i<18;i++){
+   const xx=35+(i*17)%28,yy=fabricStart+(i*11)%21;
+   block(xx,yy,1,2,i%3===0?light:dark);
+ }
+ // Crisp bodice with neck trim, sleeve seams, gold buttons and center detailing.
+ block(39,53,19,2,shade(cloth,64));
+ block(34,58,2,17,shade(cloth,-57));block(63,58,2,17,shade(cloth,-57));
+ block(47,62,3,3,'#ffe5a8');block(47,69,3,3,'#ffe5a8');
+ if(!set&&[1,4,5,6,11].includes(outfitId)){
+   for(let n=0;n<9;n++){
+     const yy=80+n*3,wid=28+n*5;
+     block(49-wid/2,yy,4,2,'#fff3df');
+     block(49+wid/2-7,yy,3,2,shade(cloth,70));
+   }
+   for(let i=0;i<6;i++)block(36+i*5,97+i%2*4,2,2,'#fff4c7');
+ }
+ if(!set&&[0,3,8,9].includes(outfitId)){
+   block(39,73,20,3,'#fbd5e9');
+   block(46,72,6,5,shade(cloth,-65));
+   for(let n=0;n<6;n++)block(34+n*5,102+n%2*3,2,2,'#ffedc9');
+ }
+ if(set){
+   const topId=Number(look.top);
+   if([2,6,8,10,11].includes(topId)){
+     block(40,54,18,4,'#fff0ea');block(46,58,6,13,dark);
+   }else if([3,4,7].includes(topId)){
+     block(37,59,24,2,'#ffebd3');block(44,67,10,3,shade(cloth,55));
+   }
+   if([0,1,7,8,9].includes(Number(look.bottom))){
+     for(let n=0;n<6;n++)block(36+n*4,87+(n%2)*3,2,9,shade(cloth,n%2?32:-32));
+   }
+ }
+ // Finishing details on shoes, accessory shine, earrings and hair highlights.
+ block(34,112,14,2,'#ffffff90');block(52,112,14,2,'#ffffff90');
+ block(30,44,3,5,'#ffd9ac');block(66,44,3,5,'#ffd9ac');
+ for(let k=0;k<9;k++){
+   const xx=32+(k*9)%32,yy=20+(k*7)%12;
+   if(xx>35&&xx<62)block(xx,yy,2,1,shade(hair,k%3===0?48:22));
+ }
+ // Detail pass at twice the resolution: individual pixels for facial expression.
+ px.setTransform(1,0,0,1,0,0);
+ const dot=(x,y,w,h,c)=>{px.fillStyle=c;px.fillRect(x,y,w,h)};
+ const eyeX=76,eyeY=75;
+ dot(eyeX,eyeY,17,3,'#53354e');dot(106,eyeY,17,3,'#53354e');
+ dot(eyeX+5,eyeY+5,3,7,'#ffffff');dot(106+5,eyeY+5,3,7,'#ffffff');
+ dot(eyeX+12,eyeY+4,3,4,'#ffffff');dot(106+12,eyeY+4,3,4,'#ffffff');
+ dot(96,94,4,2,shade(skin,-42));
+ dot(87,99,23,2,look.makeup==='0'?'#c06b83':'#a9406e');
+ dot(90,102,16,2,'#f5a7b5');
+ dot(67,89,11,4,'#ffb2ab66');dot(119,89,11,4,'#ffb2ab66');
+ // Jewellery glints, consistent tiny highlights and visible pixel stitching.
+ dot(96,124,3,3,'#fff0b1');dot(96,139,3,3,'#fff0b1');
+ for(let i=0;i<16;i++){const xx=68+(i*11)%60,yy=162+(i*7)%45;dot(xx,yy,2,2,'#fff2da88')}
+ px.setTransform(2,0,0,2,0,0);
  return pixelCanvas;
 }
 function pixelBackdrop(){
@@ -197,12 +255,12 @@ function pixelBackdrop(){
 function paint(){
  ctx.clearRect(0,0,W,H);pixelBackdrop();
  const sprite=pixelCharacter();
- const scale=Math.max(2,Math.floor(Math.min(W/132,H/160)));
+ const scale=Math.max(1,Math.floor(Math.min(W/132,H/160)));
  const width=96*scale,height=128*scale;
  const x=Math.round((W-width)/2),y=Math.round(H*.53-height*.48+Math.sin(time*2.4)*2);
  ctx.imageSmoothingEnabled=false;
- ctx.drawImage(sprite,x,y,width,height);
- for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;const pixel=Math.max(3,Math.round(p.r*1.8));ctx.fillRect(Math.round(p.x/pixel)*pixel,Math.round(p.y/pixel)*pixel,pixel,pixel)}
+ ctx.drawImage(sprite,0,0,192,256,x,y,width,height);
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;const pixel=Math.max(2,Math.round(p.r*1.5));ctx.fillRect(Math.round(p.x/pixel)*pixel,Math.round(p.y/pixel)*pixel,pixel,pixel)}
  ctx.globalAlpha=1;
 }
 function loop(now){let dt=Math.min(.05,(now-last)/1000||0);last=now;time+=dt;if(mode==='styling'){remaining-=dt;if(remaining<=0){remaining=0;startRunway()}hud()}if(mode==='runway'){let progress=((performance.now()/1000-beatStart)/beatSpeed)%1;$('beatDot').style.left=(progress*100)+'%'}for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=30*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1)}paint();requestAnimationFrame(loop)}requestAnimationFrame(loop);
