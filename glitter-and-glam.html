@@ -160,12 +160,12 @@ function pixelCharacter(){
  poly([103,149,116,148,117,224,105,229,101,199],skin);
  rect(81,168,3,51,blush);rect(106,168,3,51,blush);
  // Arms in a fashion pose, not sticks. Hands at the hips.
- poly([73,104,64,108,48,143,53,161,67,155,80,126],shadow);
- poly([73,108,67,111,53,145,56,156,64,153,78,126],skin);
- poly([119,104,131,108,148,143,143,160,128,152,115,126],shadow);
- poly([122,108,128,110,144,145,139,155,131,150,117,126],skin);
- oval(56,155,9,10,skin);oval(139,154,9,10,skin);
- rect(56,151,3,7,blush);rect(136,151,3,7,blush);
+ poly([74,106,68,110,56,145,59,159,69,156,82,123],shadow);
+ poly([76,109,71,113,61,145,61,153,66,151,79,124],skin);
+ poly([117,106,127,110,139,145,135,159,126,156,113,123],shadow);
+ poly([120,109,126,113,134,145,134,153,129,151,115,124],skin);
+ oval(61,156,7,8,skin);oval(134,156,7,8,skin);
+ rect(59,151,2,5,blush);rect(133,151,2,5,blush);
  // Long neck, elegant shoulders, dramatically snatched waist.
  rect(88,86,17,22,shadow);rect(91,85,13,24,skin);
  poly([75,104,83,100,111,100,122,106,117,129,108,146,114,156,81,156,87,143,75,128],deep);
@@ -175,9 +175,9 @@ function pixelCharacter(){
  // Clothing: formal dresses vs separate garments, each with its own silhouette.
  if(!set){
   if(gown||outfit==='dress'){
-   const hem=gown?229:187,spread=gown?67:45;
-   poly([86,148,108,148,112,159,96+spread,hem,96-spread,hem,82,161],dark);
-   poly([84,152,110,152,110,166,96+spread-10,hem-5,96-spread+12,hem-5,83,167],cloth);
+   const hem=gown?224:185,spread=gown?55:42;
+   poly([87,148,107,148,114,166,96+spread-8,hem-3,96-spread+8,hem-3,80,166],dark);
+   poly([85,153,109,153,113,167,96+spread-16,hem-7,96-spread+16,hem-7,83,168],cloth);
    poly([91,154,99,154,96+spread-20,hem-8,96+spread-28,hem-8],light);
    for(let i=0;i<7;i++){const yy=171+i*(hem-176)/7,ww=11+i*(spread-17)/7;rect(96-ww,yy,4,2,light);rect(96+ww-3,yy,3,2,shade(cloth,72))}
    if([4,5,11].includes(out)){for(let k=0;k<12;k++){const xx=66+(k*19)%61,yy=165+(k*13)%(hem-171);rect(xx,yy,2,3,k%2?gold:ivory)}}
@@ -222,30 +222,30 @@ function pixelCharacter(){
  else{poly([77,226,94,226,98,239,72,239,72,235],shoeTone);poly([103,226,119,226,128,239,100,239,100,235],shoeTone);rect(89,236,5,8,dark);rect(114,237,5,7,dark);rect(74,234,14,2,light);rect(105,234,14,2,light)}
  rect(70,241,30,3,'#442a4680');rect(99,241,30,3,'#442a4680');
  // Beautiful oversized face: softly pointed jaw, long lashes, glossy lips.
- poly([62,46,68,31,83,25,110,25,128,35,134,53,130,76,120,93,106,105,84,105,67,92,60,74],shadow);
- poly([64,46,70,34,84,28,109,28,125,38,130,53,125,76,117,90,105,100,85,100,71,88,63,71],face);
- poly([69,48,75,35,85,31,107,31,122,41,125,55,118,69,109,61,84,63,72,75],skin);
+ poly([65,44,71,30,84,24,110,24,126,34,131,51,127,77,118,94,105,103,85,103,70,92,63,73],shadow);
+ poly([67,44,73,33,85,27,109,27,123,37,127,52,123,75,115,89,104,99,86,99,73,87,66,71],face);
+ poly([72,45,78,36,87,31,106,31,119,41,123,54,117,66,107,64,86,65,75,73],skin);
  rect(65,59,3,15,shade(skin,-14));rect(125,56,3,14,shade(skin,-14));
  // Blush placement and eyebrow arch.
  rect(71,73,17,6,'#ef8ea555');rect(108,73,17,6,'#ef8ea555');
- poly([70,51,77,45,94,47,94,50,78,49],hairDark);
- poly([103,48,116,45,125,50,125,53,108,50],hairDark);
+ poly([73,53,78,50,91,51,92,53,80,52],shade(hair,-42));
+ poly([105,51,117,49,123,53,123,55,109,52],shade(hair,-42));
  const eye=colorOf(eyeColors,look.eye,'#653c32');
  // Large almond eyes with outer wings and luminous irises.
- poly([67,58,75,53,87,53,96,58,89,68,75,68],ink);
- poly([100,58,110,53,121,53,128,58,120,68,108,68],ink);
- poly([71,59,78,56,88,57,92,60,86,65,76,64],ivory);
- poly([104,59,111,56,120,57,124,60,119,65,109,64],ivory);
- oval(82,61,5,7,eye);oval(114,61,5,7,eye);
- rect(82,60,4,6,ink);rect(114,60,4,6,ink);
- rect(79,57,3,4,ivory);rect(111,57,3,4,ivory);
- for(let k=0;k<4;k++){stepStroke([71+k*5,55,67+k*5,49-k%2*2],ink,2);stepStroke([107+k*5,55,105+k*5,48-k%2*2],ink,2)}
+ poly([76,60,81,57,90,57,95,60,91,66,80,66],ink);
+ poly([102,60,107,57,116,57,121,60,116,66,106,66],ink);
+ poly([79,60,84,59,90,60,92,62,88,64,81,64],ivory);
+ poly([105,60,111,59,117,60,119,62,115,64,107,64],ivory);
+ oval(85,61,3.5,4,eye);oval(112,61,3.5,4,eye);
+ rect(85,60,2,4,ink);rect(112,60,2,4,ink);
+ rect(84,59,2,2,ivory);rect(111,59,2,2,ivory);
+ for(let k=0;k<2;k++){stepStroke([77+k*4,59,75+k*4,55],ink,1.5);stepStroke([116+k*4,59,119+k*4,55],ink,1.5)}
  // Nose, cupid's bow, plump pixel lips; makeup changes lipstick and shimmer.
  rect(98,69,3,7,shadow);rect(101,75,3,2,shade(skin,-47));
  const lip=make===0?'#b96781':make===4?'#91344e':make===2?'#ed70a6':'#d65c81';
- poly([86,84,93,81,99,83,104,81,112,84,108,90,100,92,91,90],lip);
- rect(94,85,11,2,shade(lip,46));rect(97,90,7,2,'#fff5ea88');
- if(make>1){rect(69,54,16,2,'#d57bbe');rect(109,54,16,2,'#d57bbe')}
+ poly([89,85,94,82,99,84,103,82,108,85,105,88,100,90,94,88],lip);
+ rect(95,85,9,1,shade(lip,46));rect(97,88,6,1,'#fff5ea88');
+ if(make>1){rect(80,57,10,1,'#d57bbe');rect(107,57,10,1,'#d57bbe')}
  // Front hair: high-volume layered silhouettes, defined strands, glossy highlights.
  if(h===4){
   for(let i=0;i<14;i++){const angle=i*Math.PI*2/14;oval(96+Math.cos(angle)*42,42+Math.sin(angle)*38,14,14,i%3?hair:hairDark)}
